@@ -6,10 +6,10 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
+import tecsup.edu.lab04.databinding.ActivityMainBinding
 
 const val ACTIVITY_A_REQUEST = 991
 const val ACTIVITY_B_REQUEST = 992
@@ -21,19 +21,57 @@ const val PARAMETER_EXTRA_OFICINA_M = "oficina"
 const val PARAMETER_EXTRA_NUMERO_M = "numero"
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+
+        binding = ActivityMainBinding.inflate(layoutInflater)
+
+        val view = binding.root
+
+        setContentView(view)
+        listenerCallButtons()
     }
 
-    fun sendExplicit(view: android.view.View) {
-        val nombre = tvNombre.text.toString()
-        val correo = tvCorreo.text.toString()
-        val oficina = tvOficina.text.toString()
-        val numero = tvNumero.text.toString()
+    private fun listenerCallButtons() {
 
-        validateInputFields(nombre, correo, oficina, numero)
-        goDetailActivity(nombre, correo, oficina, numero)
+        binding.btnEditar.setOnClickListener {
+            val nombre = binding.tvNombre.text.toString()
+            val correo = binding.tvCorreo.text.toString()
+            val oficina = binding.tvOficina.text.toString()
+            val numero = binding.tvNumero.text.toString()
+
+            validateInputFields(nombre, correo, oficina, numero)
+            goDetailActivity(nombre, correo, oficina, numero)
+        }
+
+        binding.button1.setOnClickListener {
+            val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + tvNumero.text.toString()))
+            startActivity(intent)
+        }
+        binding.button2.setOnClickListener {
+            var mobileNumber = tvNumero.text.toString()
+            val url =
+                "https://api.whatsapp.com/send?phone=${mobileNumber}&text=You%20can%20now%20send%20me%20audio%20and%20video%20messages%20on%20the%20app%20-%20Chirp.%20%0A%0Ahttps%3A//bit.ly/chirp_android"
+
+            val intent = Intent(Intent.ACTION_VIEW).apply {
+                this.data = Uri.parse(url)
+                this.`package` = "com.whatsapp"
+            }
+
+            try {
+                startActivity(intent)
+            } catch (ex : ActivityNotFoundException){
+                Toast.makeText(this, "Whatsapp no esta instalado", Toast.LENGTH_SHORT).show()
+            }
+        }
+        binding.button3.setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse("sms:" + tvNumero.text.toString()))
+            intent.putExtra("sms_body", tvNombre.text.toString())
+            startActivity(intent)
+        }
     }
 
     private fun goDetailActivity(nombre: String, correo: String, oficina: String, numero: String) {
@@ -47,34 +85,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun validateInputFields(nombre: String, correo: String, oficina: String, numero: String) {
         if (nombre.isBlank() && correo.isBlank() && oficina.isBlank() && numero.isBlank()) return
-    }
-
-    fun callPhone(view: View) {
-        val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + tvNumero.text.toString()))
-        startActivity(intent)
-    }
-
-    fun sendMessage(view: View) {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("sms:" + tvNumero.text.toString()))
-        intent.putExtra("sms_body", tvNombre.text.toString())
-        startActivity(intent)
-    }
-
-    fun sendWhatsapp(view: View) {
-        var mobileNumber = tvNumero.text.toString()
-        val url =
-            "https://api.whatsapp.com/send?phone=${mobileNumber}&text=You%20can%20now%20send%20me%20audio%20and%20video%20messages%20on%20the%20app%20-%20Chirp.%20%0A%0Ahttps%3A//bit.ly/chirp_android"
-
-        val intent = Intent(Intent.ACTION_VIEW).apply {
-            this.data = Uri.parse(url)
-            this.`package` = "com.whatsapp"
-        }
-
-        try {
-            startActivity(intent)
-        } catch (ex : ActivityNotFoundException){
-            Toast.makeText(this, "Whatsapp no esta instalado", Toast.LENGTH_SHORT).show()
-        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

@@ -147,7 +147,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="112dp"
                 android:layout_marginTop="20dp"
-                android:onClick="sendExplicit"
                 android:text="Editar"
                 android:textSize="10sp" />
 
@@ -157,7 +156,6 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentBottom="true"
-                android:onClick="callPhone"
                 android:text="@string/call"
                 android:textSize="10sp" />
 
@@ -168,7 +166,6 @@
                 android:layout_alignParentBottom="true"
                 android:layout_marginLeft="25dp"
                 android:layout_toRightOf="@id/button1"
-                android:onClick="sendWhatsapp"
                 android:text="@string/whatssapp"
                 android:textSize="10sp" />
 
@@ -180,7 +177,6 @@
                 android:layout_marginLeft="25dp"
                 android:layout_toRightOf="@id/button2"
                 android:drawableTint="@color/white"
-                android:onClick="sendMessage"
                 android:text="@string/message"
                 android:textSize="10sp" />
 
